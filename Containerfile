@@ -4,7 +4,11 @@ RUN apk add openssh && ssh-keygen -A
 
 RUN adduser wye -s /sbin/nologin
 
-RUN echo "GatewayPorts yes" >> /etc/ssh/sshd_config && systemctl restart sshd
+RUN echo "GatewayPorts yes\nPermitEmptyPasswords yes\nPasswordAuthentication no\nPubkeyAuthentication yes" >> /etc/ssh/sshd_config && \
+sed -i '/^GatewayPorts no$/d' /etc/ssh/sshd_config && \
+sed -i '/^PermitEmptyPasswords no$/d' /etc/ssh/sshd_config && \
+sed -i '/^PasswordAuthentication yes$/d' /etc/ssh/sshd_config && \
+sed -i '/^PubkeyAuthentication no$/d' /etc/ssh/sshd_config
 
 VOLUME [ "/home/wye/.ssh/authorized_keys" ]
 
